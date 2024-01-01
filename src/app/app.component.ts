@@ -59,9 +59,6 @@ export class AppComponent implements OnInit {
         this.weatherData = response;
         //console.log(response);
         //console.log(this.weatherData);
-        console.log(document.querySelector('.search'));
-        console.log(document.querySelector('.location'));
-        console.log(document.querySelector('input'));
       }
     });
   }
@@ -91,7 +88,22 @@ export class AppComponent implements OnInit {
     
   }
 
-  private errorHandler() {}
+  private errorHandler(positionError: GeolocationPositionError) {
+    switch(positionError.code) {
+      case positionError.PERMISSION_DENIED:
+        alert("User denied the request for Geolocation.")
+        break;
+      case positionError.POSITION_UNAVAILABLE:
+        alert("Location information is unavailable.")
+        break;
+      case positionError.TIMEOUT:
+        alert("The request to get user location timed out.")
+        break;
+      default:
+        alert("An unknown error occurred.")
+        break;
+      } 
+  }
 
   getPrecip() {
     if (this.weatherData?.rain !== undefined) {

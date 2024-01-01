@@ -28,3 +28,5 @@ To get more help on the Angular CLI use `ng help` or go check out the [Angular C
 
 https://www.youtube.com/watch?v=psZXU8PTAS8
 
+execute on 10.0.0.5 virtual machine:
+ng serve --ssl --host 0.0.0.0 --port 443
