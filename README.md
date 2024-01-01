@@ -1,32 +1,51 @@
-# WeatherAngular
+<h1 align="center">WeatherAngular</h1>
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 17.0.8.
+<p align="center">
+<img src="https://github.com/dancsims/weather-angular/assets/59845032/c65cab14-e7af-49dc-8b76-b03a58064121">
+</p>
 
-## Development server
+## Key Features
+* Geolocation - see weather for current location on page load
+* City Search - see weather for a specified city
+* Zip Search - see weather for a specified US zip code
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+## How To Use
 
-## Code scaffolding
+To clone and run this application, you'll need [Git](https://git-scm.com), [Node.js](https://nodejs.org/en/download/) (which comes with [npm](http://npmjs.com)), and [Angular CLI](https://angular.io/cli) installed on your computer. From your command line:
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+```bash
+# Clone this repository
+$ git clone https://github.com/dancsims/weather-angular
 
-## Build
+# Go into the repository
+$ cd weather-angular
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+# Install dependencies
+$ npm install
 
-## Running unit tests
+# Run the app
+$ ng serve
+```
+Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+## Running in Azure
 
-## Running end-to-end tests
+To view this application running in a virtual network in Azure, install the associated Client Certificate (entering provided password) and VPN Configuration file. Once connected to the VPN, navigate to the provided address of the virtual machine hosting the application.
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+Command executed on host virtual machine:
 
-## Further help
+```bash
+# Host the app for https utilization inside virtual network
+$ ng serve --ssl --host 0.0.0.0 --port 443
+```
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+## Questions & Suggestions
 
-https://www.youtube.com/watch?v=psZXU8PTAS8
+Please open an issue [here](https://github.com/dancsims/weather-angular/issues).
 
-execute on 10.0.0.5 virtual machine:
-ng serve --ssl --host 0.0.0.0 --port 443
+## Credits
+
+This software uses the following open source packages and sources:
+- [Node.js](https://nodejs.org/)
+- [Angular CLI](https://angular.io/cli)
+- [OpenWeatherAPI](https://openweathermap.org/api)
