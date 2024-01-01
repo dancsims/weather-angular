@@ -28,30 +28,32 @@ export class AppComponent implements OnInit {
   cityLocationData?: CityLocationData;
   zipLocationData?: ZipLocationData;
 
+  // On page load, get users location then use to retrieve weather data
   ngOnInit(): void {
-    
+    // navigator needs to be encapsulated in here
     if (typeof window !== "undefined") {
-
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition((position: GeolocationPosition) => {
           this.getWeatherData(position.coords.latitude, position.coords.longitude);
+          // save off the lat and lon
           this.searchLat = position.coords.latitude;
           this.searchLon = position.coords.longitude;
           //console.log(position);
         }, this.errorHandler, {timeout: 5000});
       } 
     }
-    //this.locationService.getGeolocation();
+    // reset the search box to blank 
     this.searchLocation = '';
-
-    
   }
 
+  // on search bar submit, get location data based on text in search bar
+  // getLocationData will retrieve weather data after location is determined
   onSubmit() {
     this.getLocationData(this.searchLocation);
     this.searchLocation = '';
   }
 
+  // helper function to isolate weather data retrieval logic
   private getWeatherData(lat: number, lon: number) {
     this.weatherService.getWeatherData(lat, lon)
     .subscribe({
@@ -63,7 +65,9 @@ export class AppComponent implements OnInit {
     });
   }
 
+  // helper function to isolate location data retrieval logic
   private getLocationData(searchLocation: string) {
+    // call separate functions from location service depending on number (zip) or anything else (city) 
     if (!isNaN(Number(searchLocation))) {
       this.locationService.getLocationDataByZip(searchLocation)
       .subscribe({
@@ -85,9 +89,9 @@ export class AppComponent implements OnInit {
         }
       });
     }
-    
   }
 
+  // helper function to handle error functionality when attempting to retrieve users geolocation
   private errorHandler(positionError: GeolocationPositionError) {
     switch(positionError.code) {
       case positionError.PERMISSION_DENIED:
@@ -99,12 +103,14 @@ export class AppComponent implements OnInit {
       case positionError.TIMEOUT:
         alert("The request to get user location timed out.")
         break;
+      // shouldnt be reached, but want to handle it just in case
       default:
         alert("An unknown error occurred.")
         break;
       } 
   }
 
+  // precipitation data returned by OpenWeatherAPI will only include rain/snow object if it is snowing or raining
   getPrecip() {
     if (this.weatherData?.rain !== undefined) {
       return this.weatherData?.rain["1h"]
@@ -117,10 +123,12 @@ export class AppComponent implements OnInit {
     };
   }
 
+  // time data returned by OpenWeatherAPI needs to be converted before adjusting for timezone and formatting
   convertTime(timestamp: number, timezone: number) {
+    // convert time zone from seconds to hours
     const convertTimezone = timezone / 3600
+    // convert timestamp from seconds to milliseconds
     const date = new Date(timestamp * 1000)
-
     //console.log(date);
     return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", timeZone: `Etc/GMT${convertTimezone>=0?"-":"+"}${Math.abs(convertTimezone)}`});
   }

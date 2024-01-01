@@ -4,8 +4,6 @@ import { Observable } from 'rxjs';
 import { ZipLocationData } from '../models/zipLocation.model';
 import { CityLocationData } from '../models/cityLocation.model';
 
-declare const navigator: any;
-
 @Injectable({
   providedIn: 'root'
 })
@@ -13,6 +11,7 @@ export class LocationService {
 
   constructor(private http: HttpClient) { }
 
+  // fetch location data by city from OpenWeatherAPI using city name and hardcoding a single return value
   getLocationDataByCity(location: string): Observable<CityLocationData> {
     return this.http.get<CityLocationData>('https://api.openweathermap.org/geo/1.0/direct', {
       params: new HttpParams()
@@ -22,6 +21,7 @@ export class LocationService {
     })
   }
 
+  // fetch location data from OpenWeatherAPI using zip code, and hardcoding a US country code for the zip
   getLocationDataByZip(location: string): Observable<ZipLocationData> {
     return this.http.get<ZipLocationData>('https://api.openweathermap.org/geo/1.0/zip', {
       params: new HttpParams()

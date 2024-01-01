@@ -10,6 +10,7 @@ export class WeatherService {
 
   constructor(private http: HttpClient) { }
 
+  // fetch weather data from OpenWeatherAPI using lat, lon, and hardcoding imperial units
   getWeatherData(lat: number, lon: number): Observable<WeatherData> {
     return this.http.get<WeatherData>('https://api.openweathermap.org/data/2.5/weather', {
       params: new HttpParams()

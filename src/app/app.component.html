@@ -58,7 +58,6 @@
           <span>precip</span>
         </div>
         <div class="info-block-value precip">
-          <!-- {{ weatherData.rain["1h"] }} mph -->
           {{ this.getPrecip() }} in
         </div>
       </div>
@@ -90,55 +89,5 @@
   </div>
 </div>
 </ng-container>
-
-<!--<div class="container">
-  <div class="upper-data">
-    <img src="https://openweathermap.org/img/wn/10d@4x.png">
-    <div class="weather-data">
-      <div class="location">Cincinnati</div>
-      <div class="temperature">{{ 14.40 | number: '1.0-0' }}&deg;</div>
-    </div>
-  </div>
-  <div class="lower-data">
-    <div class="more-info-label">
-      More Information
-    </div>
-    <div class="more-info-container">
-      <div class="info-block">
-        <div class="info-block-label">
-          <span>min</span>
-        </div>
-        <div class="info-block-value">
-          10&deg;
-        </div>
-      </div>
-      <div class="info-block">
-        <div class="info-block-label">
-          <span>max</span>
-        </div>
-        <div class="info-block-value">
-          20&deg;
-        </div>
-      </div>
-      <div class="info-block">
-        <div class="info-block-label">
-          <span>humidity</span>
-        </div>
-        <div class="info-block-value">
-          50%
-        </div>
-      </div>
-      <div class="info-block">
-        <div class="info-block-label">
-          <span>wind</span>
-        </div>
-        <div class="info-block-value">
-          2 mph
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
--->
 
 <router-outlet></router-outlet>
