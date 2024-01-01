@@ -29,12 +29,4 @@ export class LocationService {
       .set('appid', '78570f7e5a725cd10b6279f53495c701')
     })
   }
-
-  /*getGeolocation() {
-    navigator.geolocation.getCurrentPosition((position: GeolocationPosition) => {
-      console.log(position);
-  }, this.errorHandler, {timeout: 5000});
-  }
-
-  private errorHandler() {}*/
 }

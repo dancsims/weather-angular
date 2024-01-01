@@ -17,10 +17,9 @@ import { CityLocationData } from './models/cityLocation.model';
 })
 export class AppComponent implements OnInit {
 
-  constructor (private weatherService: WeatherService, private locationService: LocationService) {
+  constructor (private weatherService: WeatherService, private locationService: LocationService) { }
 
-  }
-
+  // set some default values
   searchLocation: string = 'Mattoon';
   searchLat: number = 10;
   searchLon: number = 10;
@@ -28,7 +27,7 @@ export class AppComponent implements OnInit {
   cityLocationData?: CityLocationData;
   zipLocationData?: ZipLocationData;
 
-  // On page load, get users location then use to retrieve weather data
+  // on page load, get users location then use to retrieve weather data
   ngOnInit(): void {
     // navigator needs to be encapsulated in here
     if (typeof window !== "undefined") {
