@@ -7,6 +7,8 @@ import {FormsModule, NgForm} from '@angular/forms';
 import { LocationService } from './services/location.service';
 import { ZipLocationData } from './models/zipLocation.model';
 import { CityLocationData } from './models/cityLocation.model';
+import { GeoLocationData } from './models/geoLocation.model';
+import { ForecastData } from './models/forecast.model';
 
 @Component({
   selector: 'app-root',
@@ -21,11 +23,16 @@ export class AppComponent implements OnInit {
 
   // set some default values
   searchLocation: string = 'Mattoon';
-  searchLat: number = 10;
-  searchLon: number = 10;
+  searchedLocation?: string;
+  units: string = "imperial";
   weatherData?: WeatherData;
   cityLocationData?: CityLocationData;
   zipLocationData?: ZipLocationData;
+  geolocation?: GeolocationPosition;
+  geoLocationData?: GeoLocationData;
+  forecastData?: ForecastData;
+  validationFlag: boolean = false;
+  containsNumbers: boolean = false;
 
   // on page load, get users location then use to retrieve weather data
   ngOnInit(): void {
@@ -33,10 +40,10 @@ export class AppComponent implements OnInit {
     if (typeof window !== "undefined") {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition((position: GeolocationPosition) => {
-          this.getWeatherData(position.coords.latitude, position.coords.longitude);
+          this.geolocation = position;
+          //this.getWeatherData(position.coords.latitude, position.coords.longitude, this.units);
           // save off the lat and lon
-          this.searchLat = position.coords.latitude;
-          this.searchLon = position.coords.longitude;
+          this.onClickF();
           //console.log(position);
         }, this.errorHandler, {timeout: 5000});
       } 
@@ -48,46 +55,123 @@ export class AppComponent implements OnInit {
   // on search bar submit, get location data based on text in search bar
   // getLocationData will retrieve weather data after location is determined
   onSubmit() {
+    this.searchedLocation = this.searchLocation;
     this.getLocationData(this.searchLocation);
     this.searchLocation = '';
   }
 
+  onClickLocation() {
+    this.searchedLocation = undefined;
+    if (this.geolocation !== undefined) {
+      this.getWeatherData(this.geolocation!.coords.latitude, this.geolocation!.coords.longitude, this.units);
+      this.geoLocationData
+    }
+  }
+
+  onClickC() {
+    this.units = 'metric';
+    if (this.searchedLocation !== undefined) {
+      this.getLocationData(this.searchedLocation!);
+    }
+    else if (this.geolocation !== undefined) {
+      this.getWeatherData(this.geolocation!.coords.latitude, this.geolocation!.coords.longitude, this.units);
+    }
+    document.getElementById("unit_celsius")!.setAttribute("style", "background-color:var(--complement);");
+    document.getElementById("unit_farenheit")!.removeAttribute("style");
+  }
+
+  onClickF() {
+    this.units = 'imperial';
+    if (this.searchedLocation !== undefined) {
+      this.getLocationData(this.searchedLocation!);
+    }
+    else if (this.geolocation !== undefined) {
+      this.getWeatherData(this.geolocation!.coords.latitude, this.geolocation!.coords.longitude, this.units);
+    }
+    document.getElementById("unit_farenheit")!.setAttribute("style", "background-color:var(--complement);");
+    document.getElementById("unit_celsius")!.removeAttribute("style");
+  }
+
   // helper function to isolate weather data retrieval logic
-  private getWeatherData(lat: number, lon: number) {
-    this.weatherService.getWeatherData(lat, lon)
+  private getWeatherData(lat: number, lon: number, units: string) {
+    this.weatherData = undefined;
+    this.forecastData = undefined;
+    this.weatherService.getWeatherData(lat, lon, this.units)
     .subscribe({
       next: (response) => {
         this.weatherData = response;
+        this.getLocationDataByGeo(lat,lon);
         //console.log(response);
         //console.log(this.weatherData);
       }
+    });
+
+    this.weatherService.getForecastData(lat, lon, this.units)
+    .subscribe({
+      next: (response) => {
+        this.forecastData = response;
+        //console.log(response);
+        console.log(this.forecastData);
+      }
+    });
+  }
+
+  private getLocationDataByGeo(lat: number, lon: number) {
+    this.geoLocationData = undefined;
+    this.locationService.getLocationDataByGeo(lat,lon)
+      .subscribe({
+        next: (response) => {
+          this.geoLocationData = response;
+          //console.log(response);
+          console.log(this.geoLocationData);
+        }
     });
   }
 
   // helper function to isolate location data retrieval logic
   private getLocationData(searchLocation: string) {
-    // call separate functions from location service depending on number (zip) or anything else (city) 
-    if (!isNaN(Number(searchLocation))) {
-      this.locationService.getLocationDataByZip(searchLocation)
-      .subscribe({
-        next: (response) => {
-          this.zipLocationData = response;
-          //console.log(response);
-          //console.log(this.zipLocationData);
-          this.getWeatherData(this.zipLocationData.lat, this.zipLocationData.lon);
-        }
-    });
-    } else {
-      this.locationService.getLocationDataByCity(searchLocation)
-      .subscribe({
-        next: (response) => {
-          this.cityLocationData = response;
-          //console.log(response);
-          //console.log(this.cityLocationData[0]);
-          this.getWeatherData(this.cityLocationData[0].lat, this.cityLocationData[0].lon);
-        }
+    this.validationFlag = this.validateLocationData(searchLocation);
+    if (this.validationFlag) {
+      // call separate functions from location service depending on number (zip) or anything else (city) 
+      if (!isNaN(Number(searchLocation))) {
+        this.zipLocationData = undefined;
+        this.locationService.getLocationDataByZip(searchLocation)
+        .subscribe({
+          next: (response) => {
+            this.zipLocationData = response;
+            //console.log(response);
+            //console.log(this.zipLocationData);
+            this.getWeatherData(this.zipLocationData.lat, this.zipLocationData.lon, this.units);
+          }
       });
+      } else {
+        this.cityLocationData = undefined;
+        this.locationService.getLocationDataByCity(searchLocation)
+        .subscribe({
+          next: (response) => {
+            this.cityLocationData = response;
+            //console.log(response);
+            //console.log(this.cityLocationData[0]);
+            this.getWeatherData(this.cityLocationData[0].lat, this.cityLocationData[0].lon, this.units);
+          }
+        });
+      }
     }
+  }
+
+  private validateLocationData(searchLocation: string) {
+    const regex = /\d/;     
+    this.containsNumbers = regex.test(this.searchLocation);
+    // check against business logic
+    // if alpha numeric
+    if (isNaN(Number(searchLocation))) {
+      // check if contains digit
+      if(this.containsNumbers) {
+        alert("AlphaNumeric used in search - please enter a city name or zip code");
+        return false;
+      }
+    }
+    return true;
   }
 
   // helper function to handle error functionality when attempting to retrieve users geolocation
@@ -109,6 +193,10 @@ export class AppComponent implements OnInit {
       } 
   }
 
+  getCountryName(countryCode: string) {
+    return this.locationService.regionNames.of(countryCode);
+  }
+
   // precipitation data returned by OpenWeatherAPI will only include rain/snow object if it is snowing or raining
   getPrecip() {
     if (this.weatherData?.rain !== undefined) {
@@ -116,6 +204,18 @@ export class AppComponent implements OnInit {
     }
     else if (this.weatherData?.snow !== undefined) {
       return this.weatherData?.snow["1h"]
+    }
+    else {
+      return 0;
+    };
+  }
+
+  getForecastPrecip() {
+    if (this.forecastData?.list[0].rain !== undefined) {
+      return this.forecastData?.list[0].rain["3h"]
+    }
+    else if (this.forecastData?.list[0].snow !== undefined) {
+      return this.forecastData?.list[0].snow["3h"]
     }
     else {
       return 0;

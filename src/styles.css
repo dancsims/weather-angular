@@ -1,6 +1,7 @@
 :root {
     --blue-1: #3c989e;
-    --blue-2: #4ca6ad;
+    --blue-2: #50B6BD;
+    --complement: #9E423C;
     --white: #FFF;
     --grey-1: #EDEDED;
     --shadow-dark: rgba(0,0,0,0.3);
@@ -17,19 +18,33 @@ body {
     font-family: Verdana, Geneva, Tahoma, sans-serif;
     font-size: 16px;
     width: 100%;
-    height: 100vh;
+    height: 100%;
     background-color: var(--blue-1);
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-.container {
+.weather__data {
     width: 400px;
-    height: 80vh;
+    height: 750px;
     background-color: var(--blue-2);
     border-radius: 20px;
     box-shadow: 10px 10px 10px var(--shadow-dark);
+}
+.forecast__data {
+    margin-top: 1em;
+    width: 400px;
+    height: 100px;
+    background-color: var(--blue-2);
+    border-radius: 20px;
+    box-shadow: 10px 10px 10px var(--shadow-dark);
+}
+
+.forecast-data {
+    padding: 1em;
+    display: flex;
+    flex-direction: column;
 }
 
 .upper-data {
@@ -76,6 +91,10 @@ body {
     align-items: right;
     justify-content: center;
     background-color: var(--shadow-dark);
+}
+
+.weather-data-content {
+    margin-top: 5em;
 }
 
 .location {
@@ -145,8 +164,11 @@ body {
 }
 
 .search {
+    margin-top: 1em;
     margin-bottom: 1em;
     text-align: center;
+    display: flex;
+    justify-content: center;
 }
 
 .search input {
@@ -159,4 +181,48 @@ body {
     font-size: 0.8em;
     text-align: center;
     box-shadow: 10px 10px 10px var(--shadow-dark);
+}
+
+.units {
+    margin-bottom: 1em;
+    text-align: center;
+    color: var(--white);
+    font-size: 1.2em;
+}
+
+.unit_box {
+    border-radius: 8px;
+    padding: 0.45em;
+    background-color: var(--shadow-light);
+    box-shadow: 10px 10px 10px var(--shadow-dark);
+    margin-left: 0.5em;
+    margin-right: 0.5em;
+}
+
+.unit_geo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--shadow-light);
+}
+
+.fl-label {
+    margin-top: 1em;
+    color: var(--grey-1);
+    text-align: center;
+    font-size: 1.2em;
+    text-transform: capitalize;
+}
+
+.fl-temp {
+    color: var(--grey-1);
+    text-align: center;
+    font-size: 1.5em;
+    font-weight: 900;
+}
+
+.location-icon {
+    width: 25px;
+    height: 25px;
+    object-fit: contain;
 }

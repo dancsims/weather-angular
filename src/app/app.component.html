@@ -2,17 +2,26 @@
   <form #form="ngForm" (submit)="onSubmit()">
     <input type="text" placeholder="Enter a city or zip..." name="searchLocation" [(ngModel)]="searchLocation" >
   </form>
+  <span class="unit_geo unit_box" (click)="onClickLocation()"><img class="location-icon" src="../assets/location.svg"></span>
+</div>
+<div class="units">
+  <span class="unit_box unit_celsius" id="unit_celsius" (click)="onClickC()">&deg;C</span>
+  <span class="unit_box unit_farenheit" id="unit_farenheit" (click)="onClickF()">&deg;F</span>
 </div>
 <ng-container *ngIf="weatherData">
-<div class="container" >
+<div class="weather__data container" >
   <div class="upper-data">
     <div class="upper-img">
       <img src="https://openweathermap.org/img/wn/{{ weatherData.weather[0].icon }}@4x.png">
     </div>
     <div class="weather-data">
-      <div class="location">{{ weatherData.name }}</div>
-      <div class="temperature">{{ weatherData.main.temp | number: '1.0-0' }}&deg;</div>
-      <div class="weather-description">{{ weatherData.weather[0].description }}</div>
+      <div class="weather-data-content">
+        <div class="location">{{ weatherData.name }}, {{ this.geoLocationData !== undefined ? this.geoLocationData![0].state : '' }} <br> {{ this.getCountryName(weatherData.sys.country) }}</div>
+        <div class="temperature">{{ weatherData.main.temp | number: '1.0-0' }}&deg;</div>
+        <div class="weather-description">{{ weatherData.weather[0].description }}</div>
+        <div class="fl-label">Feels Like:</div>
+        <div class="fl-temp">{{ weatherData.main.feels_like | number: '1.0-0' }}&deg;</div>
+      </div>
     </div>
     
   </div>
@@ -50,7 +59,7 @@
           <span>wind</span>
         </div>
         <div class="info-block-value win">
-          {{ weatherData.wind.speed }} mph
+          {{ weatherData.wind.speed | number: '1.0-0' }} {{ this.units === 'imperial' ? 'mph':'m/s' }}
         </div>
       </div>
       <div class="info-block">
@@ -58,7 +67,7 @@
           <span>precip</span>
         </div>
         <div class="info-block-value precip">
-          {{ this.getPrecip() }} in
+          {{ this.getPrecip() }} mm
         </div>
       </div>
       <div class="info-block">
@@ -89,5 +98,50 @@
   </div>
 </div>
 </ng-container>
-
+<ng-container *ngIf="forecastData">
+  @for (forecastRow of forecastData.list; track $index) {
+  <div class="forecast__data container" >
+    <div class="forecast-data">
+    <div class="more-info-label">
+    {{ this.forecastRow.dt_txt }}
+  </div>
+    <div class="more-info-container">
+    <div class="info-block">
+      <div class="info-block-label">
+        <span>temp</span>
+      </div>
+      <div class="info-block-value min">
+        {{ forecastRow.main.temp | number: '1.0-0' }}&deg;
+      </div>
+    </div>
+    <div class="info-block">
+      <div class="info-block-label">
+        <span>feels like</span>
+      </div>
+      <div class="info-block-value min">
+        {{ forecastRow.main.feels_like | number: '1.0-0' }}&deg;
+      </div>
+    </div>
+    <div class="info-block">
+      <div class="info-block-label">
+        <span>wind</span>
+      </div>
+      <div class="info-block-value min">
+        {{ forecastRow.wind.speed | number: '1.0-0' }} {{ this.units === 'imperial' ? 'mph':'m/s' }}
+      </div>
+    </div>
+    <div class="info-block">
+      <div class="info-block-label">
+        <span>precip</span>
+      </div>
+      <div class="info-block-value min">
+        {{ this.getForecastPrecip() }} mm
+      </div>
+    </div>
+  </div>
+  
+</div>
+</div>
+  }
+</ng-container>
 <router-outlet></router-outlet>

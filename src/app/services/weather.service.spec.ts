@@ -23,6 +23,6 @@ describe('WeatherService', () => {
   });
 
   it('should fetch weather data', () => {
-    expect(service.getWeatherData(10,10)).toBeDefined();
+    expect(service.getWeatherData(10,10, 'imperial')).toBeDefined();
   });
 });

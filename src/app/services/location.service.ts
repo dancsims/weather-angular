@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { ZipLocationData } from '../models/zipLocation.model';
 import { CityLocationData } from '../models/cityLocation.model';
+import { GeoLocationData } from '../models/geoLocation.model';
 
 @Injectable({
   providedIn: 'root'
@@ -10,6 +11,8 @@ import { CityLocationData } from '../models/cityLocation.model';
 export class LocationService {
 
   constructor(private http: HttpClient) { }
+
+  regionNames = new Intl.DisplayNames(['en'], {type: 'region'});
 
   // fetch location data by city from OpenWeatherAPI using city name and hardcoding a single return value
   getLocationDataByCity(location: string): Observable<CityLocationData> {
@@ -26,6 +29,16 @@ export class LocationService {
     return this.http.get<ZipLocationData>('https://api.openweathermap.org/geo/1.0/zip', {
       params: new HttpParams()
       .set('zip', location+",US")
+      .set('appid', '78570f7e5a725cd10b6279f53495c701')
+    })
+  }
+
+  getLocationDataByGeo(lat: number, lon: number): Observable<GeoLocationData> {
+    return this.http.get<GeoLocationData>('https://api.openweathermap.org/geo/1.0/reverse', {
+      params: new HttpParams()
+      .set('lat', lat)
+      .set('lon', lon)
+      .set('limit', 1)
       .set('appid', '78570f7e5a725cd10b6279f53495c701')
     })
   }
