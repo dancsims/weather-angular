@@ -162,8 +162,8 @@ export class AppComponent implements OnInit {
   private validateLocationData(searchLocation: string) {
     const regex = /\d/;     
     this.containsNumbers = regex.test(this.searchLocation);
-    // check against business logic
     // if alpha numeric
+    // check if is not a number
     if (isNaN(Number(searchLocation))) {
       // check if contains digit
       if(this.containsNumbers) {
@@ -229,6 +229,15 @@ export class AppComponent implements OnInit {
     // convert timestamp from seconds to milliseconds
     const date = new Date(timestamp * 1000)
     //console.log(date);
-    return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", timeZone: `Etc/GMT${convertTimezone>=0?"-":"+"}${Math.abs(convertTimezone)}`});
+    return date.toLocaleTimeString([], { hour: "numeric", minute: "numeric", timeZone: `Etc/GMT${convertTimezone>=0?"-":"+"}${Math.abs(convertTimezone)}`});
+  }
+
+  convertForecastTime(timestamp: number, timezone: number) {
+    // convert time zone from seconds to hours
+    const convertTimezone = timezone / 3600
+    // convert timestamp from seconds to milliseconds
+    const date = new Date(timestamp * 1000)
+    //console.log(date);
+    return date.toLocaleTimeString([], { weekday: "long", hour: "numeric", minute: "numeric", timeZone: `Etc/GMT${convertTimezone>=0?"-":"+"}${Math.abs(convertTimezone)}`});
   }
 }
