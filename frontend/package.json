@@ -9,5 +9,9 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs"
+  "type": "commonjs",
+  "devDependencies": {
+    "@angular-devkit/build-angular": "^21.2.7",
+    "@angular/cli": "^21.2.7"
+  }
 }
