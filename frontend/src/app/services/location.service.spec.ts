@@ -29,4 +29,8 @@ describe('LocationService', () => {
   it('should fetch city data', () => {
     expect(service.getLocationDataByCity('Dayton')).toBeDefined();
   });
+
+  it('should fetch zip data', () => {
+    expect(service.getLocationDataByGeo(10,10)).toBeDefined();
+  });
 });
